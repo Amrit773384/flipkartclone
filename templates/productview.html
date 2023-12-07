@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta http-equiv="refresh" content="1"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href=/static/images/favicon.png>
+    <link rel="shortcut icon" type="image/png" href=/static/images/favicon.png>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
+        integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/flipkart.css">
+    <title>Flipkart</title>
+</head>
+
+<style>
+    .item-container {
+        background-color: white;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .item-container>div,
+    .item-container>div>div>img {
+        width: 100%;
+    }
+
+    .image-div {
+        width: 40%;
+        margin: 5%;
+        aspect-ratio: 1;
+    }
+
+    .details-div {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    .accordian-link h3 {
+        font-size: clamp(18px, 2vw, 30px);
+    }
+
+    .user_image {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        background: #00000030;
+        border-radius: 50%;
+        padding: .20rem;
+    }
+
+    .review_answer {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+
+    /*scrollbar width */
+    .review_answer::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /*scrollbar Track */
+    .review_answer::-webkit-scrollbar-track {
+        background: rgb(189, 190, 189);
+        border-radius: 8px;
+    }
+
+    .review_answer::-webkit-scrollbar-thumb {
+        background-color: green;
+        outline: 1px solid darkgreen;
+        border-radius: 8px;
+    }
+</style>
+
+
+<body>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary"
+        style="display: block;position: sticky;top:0;">
+        <div class="container">
+            <a class="navbar-brand" href="/">Flipkart</a>
+            <img src="/static/images/flipkart-logo-C9E637A758-seeklogo.com.png" width="30" height="30"
+                class="d-inline-block align-top" alt="">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search for Products, Brands and more"
+                    aria-label="Search" id="search-bar">
+                <i class="fas fa-search"></i>
+            </form>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item">
+                    <a class="nav-link" id="nav_i"
+                        style="font-weight: bolder;text-transform: capitalize;">{{request.user}}<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="nav_i"> More </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#"><i class="fas fa-briefcase"></i> Sell On Flipkart</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#"><i class="fas fa-question"></i> 24X7 Customer Care</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#"><i class="fas fa-chart-line"></i> Advertise</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#"><i class="fas fa-download"></i> Download App</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/addproduct/"><i class="fas fa-product-hunt"></i> Add Product</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nav_i"><i class="fas fa-shopping-cart"></i>Cart<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout/" id="nav_i" style="">Logout<span
+                            class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="item-container">
+        <div style="display: flex;flex-direction: row;">
+            <div class="image-div">
+                <img src="/{{product.product_prophile}}" alt="">
+            </div>
+
+            <div class="details-div">
+                <h1>{{product.product_name}}</h1>
+                <p>only {{product.units}} left in stocks </p>
+                <p>{{product.title}}</p>
+                <p>{{product.brand}}</p>
+                <p>{{product.price}}</p>
+                {% for i in star %}
+                <i class="fa-solid fa-star " style="color:yellow"></i>
+                {% endfor %}
+                {% for i in notstar %}
+                <i class="fa fa-star"></i>
+                {% endfor %}
+            </div>
+        </div>
+        <form id="review-form" action="" method="post">
+            <input type="text" style="display: none;" value="{{product.product_id}}" name="product_id">
+        {% csrf_token %}
+        <div id="second-div">
+            <!--   ///////// Dynamic Reviews Section ////// -->
+            <section class="faq_dynamic-main border-none">
+                <div class="container">
+                    <div class="listing__faq py-4 ">
+                        <div class="faq_inner-listing">
+                            <h2 class="secondary-color py-2 f-24"> Add Your Review </h2>
+                            <div class="faq_box-wrapper">
+                                <div class="faq_form-box-inner border border-1 border-secondary rounded p-3"><input
+                                        type="text" name="user" id="review-username" placeholder="Name"
+                                        class="w-100 py-2 form-control rounded-0" required>
+                                    <div class="input-group"><textarea aria-label="With textarea" rows="4" cols="50"
+                                            id="rewiew_message" placeholder="Message"
+                                            class="form-control mt-3 w-100 rounded-0" 
+                                            name="review" required></textarea></div>
+                                    <div class="list_add-faq pt-4">
+                                        <div class="input-group align-items-center">
+                                            <div class="list_add-review-cta p-3 rounded bg-secondary pointer">
+                                                <h3 class="text-dark f-16 fw-semibold m-0" onclick="document.getElementById('review-form').submit();"><i
+                                                        class="fa fa-plus fa-solid fa-sharp text-dark pe-2 f-20"></i>Add
+                                                    Review </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+            <section class="content-wrapper-faq py-5">
+                <div class="container">
+                    <!-- <h3 class="main-head text-center">Your Reviews Here</h3> -->
+                    <div class="main_reviews-container">
+                        {% for review in reviews %}
+                        <div class="border py-3 my-2 border-dark rounded reviews_inner container">
+                            <div class="accordian-link d-flex align-items-center pointer py-2 ">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1053/1053244.png" alt=""
+                                    class="img-fluid user_image">
+                                <h3 class="reveiew_user_name ps-3">{{review.user}}</h3>
+                            </div>
+                            <p class="review_answer">{{review.review}}</p>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+            </section>
+        </div>
+        </form>
+    </div>
+</body>
+{% if error %}
+<script>
+    alert("{{error}}");
+</script>
+{% endif %}
+
+</html>
